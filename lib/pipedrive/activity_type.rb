@@ -8,7 +8,7 @@ module Pipedrive
     include ::Pipedrive::Operations::Delete
 
     def entity_name
-      'activityTypes'
+      "activityTypes"
     end
   end
 end

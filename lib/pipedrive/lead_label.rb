@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Pipedrive
   class LeadLabel < Base
     include ::Pipedrive::Operations::Create
@@ -6,7 +8,7 @@ module Pipedrive
     include ::Pipedrive::Operations::Delete
 
     def entity_name
-      'leadLabels'
+      "leadLabels"
     end
   end
 end

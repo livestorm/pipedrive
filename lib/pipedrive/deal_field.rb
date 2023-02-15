@@ -7,7 +7,7 @@ module Pipedrive
     include ::Pipedrive::Operations::Delete
 
     def entity_name
-      'dealFields'
+      "dealFields"
     end
   end
 end

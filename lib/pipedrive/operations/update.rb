@@ -9,7 +9,7 @@ module Pipedrive
         params = args.extract_options!
         params.symbolize_keys!
         id = params.delete(:id) || args[0]
-        raise 'id must be provided' unless id
+        raise "id must be provided" unless id
 
         make_api_call(:put, id, params)
       end

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 RSpec.describe ::Pipedrive::ActivityType do
-  subject { described_class.new('token') }
+  subject { described_class.new("token") }
 
-  describe '#entity_name' do
+  describe "#entity_name" do
     subject { super().entity_name }
 
-    it { is_expected.to eq('activityTypes') }
+    it { is_expected.to eq("activityTypes") }
   end
 end

@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
-require 'logger'
-require 'active_support/core_ext/hash'
-require 'active_support/concern'
-require 'active_support/inflector'
+require "logger"
+require "active_support/core_ext/hash"
+require "active_support/core_ext/array"
+require "active_support/core_ext/numeric/time"
+require "active_support/concern"
+require "active_support/inflector"
 
-require 'hashie'
-require 'faraday'
-require 'faraday_middleware'
-require 'pipedrive/version'
+require "hashie"
+require "faraday"
+require "faraday/mashify"
+require_relative "pipedrive/version"
 
 module Pipedrive
   extend self
@@ -41,60 +43,60 @@ module Pipedrive
   reset!
 end
 
-require 'pipedrive/railties' if defined?(::Rails)
+require_relative "pipedrive/railties" if defined?(::Rails)
 
 # Core
-require 'pipedrive/base'
-require 'pipedrive/utils'
-require 'pipedrive/operations/create'
-require 'pipedrive/operations/read'
-require 'pipedrive/operations/update'
-require 'pipedrive/operations/delete'
+require_relative "pipedrive/base"
+require_relative "pipedrive/utils"
+require_relative "pipedrive/operations/create"
+require_relative "pipedrive/operations/read"
+require_relative "pipedrive/operations/update"
+require_relative "pipedrive/operations/delete"
 
 # Persons
-require 'pipedrive/person_field'
-require 'pipedrive/person'
+require_relative "pipedrive/person_field"
+require_relative "pipedrive/person"
 
 # Organizations
-require 'pipedrive/organization_field'
-require 'pipedrive/organization'
+require_relative "pipedrive/organization_field"
+require_relative "pipedrive/organization"
 
 # Filters
-require 'pipedrive/filter'
+require_relative "pipedrive/filter"
 
 # Products
-require 'pipedrive/product_field'
-require 'pipedrive/product'
+require_relative "pipedrive/product_field"
+require_relative "pipedrive/product"
 
 # Roles
-require 'pipedrive/role'
+require_relative "pipedrive/role"
 
 # Stages
-require 'pipedrive/stage'
+require_relative "pipedrive/stage"
 
 # Goals
-require 'pipedrive/goal'
+require_relative "pipedrive/goal"
 
 # Activities
-require 'pipedrive/activity'
-require 'pipedrive/activity_type'
+require_relative "pipedrive/activity"
+require_relative "pipedrive/activity_type"
 
 # Deals
-require 'pipedrive/deal_field'
-require 'pipedrive/deal'
+require_relative "pipedrive/deal_field"
+require_relative "pipedrive/deal"
 
 # Lead
-require 'pipedrive/lead_label'
-require 'pipedrive/lead'
+require_relative "pipedrive/lead_label"
+require_relative "pipedrive/lead"
 
 # Files
-require 'pipedrive/file'
+require_relative "pipedrive/file"
 
 # Notes
-require 'pipedrive/note'
+require_relative "pipedrive/note"
 
 # Users
-require 'pipedrive/user'
+require_relative "pipedrive/user"
 
 # Pipelines
-require 'pipedrive/pipeline'
+require_relative "pipedrive/pipeline"
