@@ -5,10 +5,10 @@ $:.unshift(lib) unless $:.include?(lib)
 require "pipedrive/version"
 
 Gem::Specification.new do |gem|
-  gem.name          = "pipedrive.rb"
+  gem.name          = "pipedrive"
   gem.version       = Pipedrive::VERSION
-  gem.authors       = ["Alexander Simonov"]
-  gem.email         = ["alex@amoniac.eu"]
+  gem.authors       = ["Alexander Simonov", "Ihor Strumetskyi"]
+  gem.email         = ["alex@amoniac.eu", "ihor.strumetskyi@livestorm.co"]
   gem.summary       = "Pipedrive.com API Wrapper"
   gem.description   = "Pipedrive.com API Wrapper"
   gem.homepage      = "https://github.com/amoniacou/pipedrive.rb"
