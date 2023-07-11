@@ -49,9 +49,9 @@ RSpec.describe ::Pipedrive::Operations::Read do
       expect { |b| subject.each(&b) }.to yield_successive_args
     end
 
-    it "does not yield anything if result is not success" do
+    it "yield data if result is not success" do
       allow(subject).to receive(:chunk).with(start: 0).and_return(::Hashie::Mash.new(success: false))
-      expect { |b| subject.each(&b) }.to yield_successive_args
+      expect { |b| subject.each(&b) }.to yield_successive_args(::Hashie::Mash.new(success: false))
     end
   end
 
@@ -65,10 +65,10 @@ RSpec.describe ::Pipedrive::Operations::Read do
   end
 
   describe "#chunk" do
-    it "returns []" do
+    it "returns response error" do
       res = instance_double(Faraday::Response, success?: false)
       allow(subject).to receive(:make_api_call).with(:get, {}).and_return(res)
-      expect(subject.chunk).to eq([])
+      expect(subject.chunk).to eq(res)
     end
 
     it "returns result" do
