@@ -9,7 +9,7 @@ module Pipedrive
       loop do
         res = __send__(method, *args, **params.merge(start: start))
 
-        yield(res) if block_given? && !res.success?
+        yield(res) if block_given? && !res.nil? && !res.success?
         break if !res.try(:data) || !res.success?
 
         res.data.each(&block)
