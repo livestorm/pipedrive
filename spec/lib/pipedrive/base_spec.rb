@@ -16,7 +16,7 @@ RSpec.describe ::Pipedrive::Base do
       expect(subject).to eq({
         url: "https://api.pipedrive.com",
         headers: { accept: "application/json", content_type: "application/json",
-                   user_agent: "Pipedrive Ruby Client v0.4.0", },
+                   user_agent: "Pipedrive Ruby Client v0.4.1", },
       })
     }
   end
@@ -30,7 +30,14 @@ RSpec.describe ::Pipedrive::Base do
   describe "#failed_response" do
     subject { super().failed_response(res) }
 
-    let(:res) { instance_double(Faraday::Response, body: ::Hashie::Mash.new({}), status: status) }
+    let(:res) do
+      instance_double(
+        Faraday::Response,
+        body: ::Hashie::Mash.new({}),
+        status: status,
+        headers: ::Hashie::Mash.new({})
+      )
+    end
 
     context "status is 401" do
       let(:status) { 401 }
