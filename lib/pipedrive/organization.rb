@@ -30,7 +30,7 @@ module Pipedrive
 
     def deals_chunk(id, params = {})
       res = make_api_call(:get, "#{id}/deals")
-      return [] unless res.success?
+      return res unless res.success?
 
       res
     end

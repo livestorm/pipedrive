@@ -3,7 +3,9 @@
 require "spec_helper"
 
 RSpec.describe ::Pipedrive::Base do
-  subject(:instance) { described_class.new("token") }
+  subject(:instance) { described_class.new("token", logger) }
+
+  let(:logger) { nil }
 
   describe "#entity_name" do
     it { expect(instance.entity_name).to eq(described_class.name.split("::")[-1].downcase.pluralize) }
@@ -16,7 +18,7 @@ RSpec.describe ::Pipedrive::Base do
       expect(subject).to eq({
         url: "https://api.pipedrive.com",
         headers: { accept: "application/json", content_type: "application/json",
-                   user_agent: "Pipedrive Ruby Client v0.4.0", },
+                   user_agent: "Pipedrive Ruby Client v0.4.1", },
       })
     }
   end
@@ -30,7 +32,14 @@ RSpec.describe ::Pipedrive::Base do
   describe "#failed_response" do
     subject { super().failed_response(res) }
 
-    let(:res) { instance_double(Faraday::Response, body: ::Hashie::Mash.new({}), status: status) }
+    let(:res) do
+      instance_double(
+        Faraday::Response,
+        body: ::Hashie::Mash.new({}),
+        status: status,
+        headers: ::Hashie::Mash.new({foo: :bar})
+      )
+    end
 
     context "status is 401" do
       let(:status) { 401 }
@@ -40,6 +49,7 @@ RSpec.describe ::Pipedrive::Base do
           failed: false,
           not_authorized: true,
           success: false,
+          foo: :bar,
         }))
       }
     end
@@ -52,6 +62,7 @@ RSpec.describe ::Pipedrive::Base do
           failed: true,
           not_authorized: false,
           success: false,
+          foo: :bar,
         }))
       }
     end
@@ -64,6 +75,7 @@ RSpec.describe ::Pipedrive::Base do
           failed: false,
           not_authorized: false,
           success: false,
+          foo: :bar,
         }))
       }
     end
@@ -72,6 +84,26 @@ RSpec.describe ::Pipedrive::Base do
   describe "#make_api_call" do
     it "faileds no method" do
       expect { subject.make_api_call(test: "foo") }.to raise_error("method param missing")
+    end
+
+    context "with logger" do
+      let(:logger) { double(:logger) }
+
+      before do
+        allow(logger).to receive(:info)
+      end
+
+      it "logs the call" do
+        stub_request(:get, "https://api.pipedrive.com/v1/bases?api_token=token")
+          .to_return(status: 200, body: {}.to_json, headers: {})
+        expect_any_instance_of(::Faraday::Connection).to receive(:get)
+          .with("/v1/bases?api_token=token", {})
+          .and_call_original
+
+        subject.make_api_call(:get)
+
+        expect(logger).to have_received(:info)
+      end
     end
 
     context "without id" do

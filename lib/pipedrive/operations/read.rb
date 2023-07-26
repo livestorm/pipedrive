@@ -19,7 +19,7 @@ module Pipedrive
 
       def chunk(params = {})
         res = make_api_call(:get, params)
-        return [] unless res.success?
+        return res unless res.success?
 
         res
       end

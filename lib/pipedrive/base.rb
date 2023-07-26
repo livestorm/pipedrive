@@ -2,10 +2,11 @@
 
 module Pipedrive
   class Base
-    def initialize(api_token = ::Pipedrive.api_token)
+    def initialize(api_token = ::Pipedrive.api_token, logger = nil)
       raise "api_token should be set" if api_token.blank?
 
       @api_token = api_token
+      @logger    = logger
     end
 
     def connection
@@ -20,7 +21,9 @@ module Pipedrive
       url = build_url(args, params.delete(:fields_to_select))
       params = params.to_json unless method.to_sym == :get
       begin
-        res = connection.__send__(method.to_sym, url, params)
+        res = connection.__send__(method.to_sym, url, params).tap do |response|
+          @logger.info(call_api_log(method.to_sym, url, params, response)) if @logger
+        end
       rescue Errno::ETIMEDOUT
         retry
       rescue Faraday::ParsingError
@@ -58,7 +61,7 @@ module Pipedrive
 
     def failed_response(res)
       failed_res = res.body.merge(success: false, not_authorized: false,
-        failed: false)
+        failed: false).merge(res.headers)
       case res.status
       when 401
         failed_res[:not_authorized] = true
@@ -72,6 +75,27 @@ module Pipedrive
       class_name = self.class.name.split("::")[-1].downcase.pluralize
       class_names = { "people" => "persons" }
       class_names[class_name] || class_name
+    end
+
+    def call_api_log(http_method, path, opts, response)
+      {
+        method: "#{self.class.to_s}#make_api_call",
+        caller: self.class.to_s,
+        content: {
+          request: {
+            endpoint: {
+              http_method: http_method,
+              path: path,
+              opts: opts,
+            },
+          },
+          response: {
+            code: response.status,
+            headers: response.headers,
+            data: response.body,
+          },
+        },
+      }
     end
 
     class << self
