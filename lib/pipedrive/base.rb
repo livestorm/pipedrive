@@ -56,12 +56,24 @@ module Pipedrive
     def response_body(json)
       JSON.parse(json)
     rescue StandardError
-      {}
+      if json.present?
+        { body: json }
+      else
+        {}
+      end
     end
 
     def failed_response(res)
-      failed_res = res.body.merge(success: false, not_authorized: false,
-        failed: false).merge(res.headers)
+      failed_res = if res.body.is_a?(::Hashie::Mash)
+        res.body
+      else
+        ::Hashie::Mash.new(response_body(res.body))
+      end
+
+      failed_res.merge!(success: false, not_authorized: false, failed: false)
+      failed_res.merge!(res.headers)
+
+      # failed_res = res.body.merge(success: false, not_authorized: false, failed: false).merge(res.headers)
       case res.status
       when 401
         failed_res[:not_authorized] = true
