@@ -73,7 +73,6 @@ module Pipedrive
       failed_res.merge!(success: false, not_authorized: false, failed: false)
       failed_res.merge!(res.headers)
 
-      # failed_res = res.body.merge(success: false, not_authorized: false, failed: false).merge(res.headers)
       case res.status
       when 401
         failed_res[:not_authorized] = true
