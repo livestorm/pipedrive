@@ -41,6 +41,27 @@ RSpec.describe ::Pipedrive::Base do
       )
     end
 
+    context "when the body is a string" do
+      let(:res) do
+        instance_double(
+          Faraday::Response,
+          body: "Too many requests",
+          status: 429,
+          headers: ::Hashie::Mash.new({foo: :bar})
+        )
+      end
+
+      it "returns an error hash" do
+        expect(subject).to eq(::Hashie::Mash.new({
+          body: "Too many requests",
+          failed: false,
+          not_authorized: false,
+          success: false,
+          foo: :bar,
+        }))
+      end
+    end
+
     context "status is 401" do
       let(:status) { 401 }
 
